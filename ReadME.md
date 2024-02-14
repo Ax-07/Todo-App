@@ -4,13 +4,13 @@ Ce projet est une application complète de gestion de tâches (Todo List) avec u
 
 ## Récupération du projet
 
-Vous pouvez cloner le projet à partir de son [repository GitHub](https://github.com/Ax-07/Todo-App-fill-stack.git).
+Vous pouvez cloner le projet à partir de son [repository GitHub](https://github.com/Ax-07/Todo-App.git).
 
 
 ## Installation
 
 Assurez-vous d'avoir Node.js et npm installés sur votre machine.
-1. Clonez le repository : `git clone https://github.com/Ax-07/Todo-App-fill-stack.git`
+1. Clonez le repository : `git clone https://github.com/Ax-07/Todo-App.git`
 
 ### Frontend
 
