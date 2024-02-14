@@ -1,0 +1,15 @@
+button {
+    background-color: $accent-color;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .button-dark {
+    background-color: darken($accent-color, 10%);
+  }
+
+  .btn-delete {
+    padding: 5px;
+  }
