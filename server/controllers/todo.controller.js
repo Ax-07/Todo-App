@@ -24,10 +24,8 @@ exports.create = (req, res) => {
     Todo.create(todo)
         .then(data => {
             res.json(data);
-            console.log(res)
         })
         .catch(err => {
-            console.log(res)
             res.status(500).json({ message: err.message || "Une erreur s'est produite lors de la création de la tâche." });
         });
 };
@@ -94,7 +92,7 @@ exports.delete = async (req, res) => {
         for (let type of ['desktop', 'mobile', 'tablet']) {
             const url = new URL(image[type]);
             const filename = path.basename(url.pathname);
-            const imagePath = path.join(__dirname, '..', 'static', 'images', filename);
+            const imagePath = path.join(__dirname, '..', 'public', 'images', filename);
             const isImageUsedElsewhere = await Todo.findOne({ where: { images: { [Op.like]: '%' + filename + '%' }, id: { [Op.ne]: id } } });
             if (!isImageUsedElsewhere && fs.existsSync(imagePath)) {
                 fs.unlink(imagePath, err => {
@@ -107,9 +105,7 @@ exports.delete = async (req, res) => {
     }
 
     // Suppression de la tâche
-    Todo.destroy({
-        where: { id: id }
-    })
+    Todo.destroy({where: { id: id }})
         .then(num => {
             if (num == 1) {
                 res.json({ message: "La tâche a été supprimée avec succès." });
