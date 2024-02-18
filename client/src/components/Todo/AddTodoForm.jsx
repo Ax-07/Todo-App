@@ -9,7 +9,6 @@ const AddTodoForm = () => {
   const [status, setStatus] = useState(false);
 
   const addTodo = async (e) => {
-
     e.preventDefault();
     const formData = new FormData();
     formData.append("title", title);

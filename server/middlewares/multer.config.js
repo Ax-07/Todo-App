@@ -34,11 +34,15 @@ const storage = multer.diskStorage({
 });
 
 // Utilisation de multer avec la configuration de stockage définie
-const upload = multer({ storage: multer.memoryStorage() }).any();
+const upload = multer({
+    storage: multer.memoryStorage(), 
+    limits: {
+        fileSize: 15 * 1024 * 1024, // Limite à 15MB
+    }
+}).any();
 
 // Exportation d'un middleware qui gère l'upload des fichiers et les erreurs potentielles
 module.exports = (req, res, next) => {
-    console.log("req", req)
     upload(req, res, async function (err) {
         // Gestion des erreurs
         if (err instanceof multer.MulterError) {
@@ -50,37 +54,34 @@ module.exports = (req, res, next) => {
         const host = req.protocol + '://' + req.get('host');
         // Stockage des informations sur les fichiers dans res.locals
         try {
-            console.log('test');
             if (req.files) {
-                console.log(req.files)
-            res.locals.files = await Promise.all(req.files.map(async file => {
-                console.log(file)
-                // Création des différentes versions de l'image
-                const desktopImagePath = 'desktop-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp'; // Nom du fichier
-                await sharp(file.buffer)
-                    .resize(1024) // Desktop
-                    .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
-                    .toFile(path.join(__dirname, '..', 'static', 'images', desktopImagePath)); // Enregistre l'image dans le dossier static/images
+                res.locals.files = await Promise.all(req.files.map(async file => {
+                    // Création des différentes versions de l'image
+                    const desktopImagePath = 'desktop-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp'; // Nom du fichier
+                    await sharp(file.buffer)
+                        .resize(1024) // Desktop
+                        .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
+                        .toFile(path.join(__dirname, '..', 'static', 'images', desktopImagePath)); // Enregistre l'image dans le dossier static/images
 
-                const tabletImagePath = 'tablet-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp';
-                await sharp(file.buffer)
-                    .resize(768) // Tablette
-                    .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
-                    .toFile(path.join(__dirname, '..', 'static', 'images', tabletImagePath)); // Enregistre l'image dans le dossier static/images
+                    const tabletImagePath = 'tablet-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp';
+                    await sharp(file.buffer)
+                        .resize(768) // Tablette
+                        .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
+                        .toFile(path.join(__dirname, '..', 'static', 'images', tabletImagePath)); // Enregistre l'image dans le dossier static/images
 
-                const mobileImagePath = 'mobile-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp';
-                await sharp(file.buffer)
-                    .resize(320) // Mobile
-                    .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
-                    .toFile(path.join(__dirname, '..', 'static', 'images', mobileImagePath)); // Enregistre l'image dans le
+                    const mobileImagePath = 'mobile-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp';
+                    await sharp(file.buffer)
+                        .resize(320) // Mobile
+                        .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
+                        .toFile(path.join(__dirname, '..', 'static', 'images', mobileImagePath)); // Enregistre l'image dans le
 
-                return {
-                    desktop: host + '/images/' + desktopImagePath,
-                    tablet: host + '/images/' + tabletImagePath,
-                    mobile: host + '/images/' + mobileImagePath,
-                }; // Retourne un objet avec les URLs des différentes versions de l'image
-            }));
-        }
+                    return {
+                        desktop: host + '/images/' + desktopImagePath,
+                        tablet: host + '/images/' + tabletImagePath,
+                        mobile: host + '/images/' + mobileImagePath,
+                    }; // Retourne un objet avec les URLs des différentes versions de l'image
+                }));
+            }
         } catch (error) {
             console.log(error);
         }
@@ -89,5 +90,5 @@ module.exports = (req, res, next) => {
         console.log(res.locals.files);
         // Passage au middleware suivant
         next(); // Appel du middleware suivant
-    }); 
+    });
 };

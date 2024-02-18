@@ -1,7 +1,8 @@
 // Importe les fonctions nécessaires depuis la bibliothèque redux-toolkit/query/react
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const url = "https://todo-app-kappa-two-24.vercel.app"
+const urltestVercel = "https://todo-app-kappa-two-24.vercel.app";
+const url = 'http://localhost:8050';
 // Crée une nouvelle API en utilisant la fonction createApi de Redux Toolkit
 export const figureApi = createApi({
     // Spécifie le chemin du réducteur dans le store Redux
