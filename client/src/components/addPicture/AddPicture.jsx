@@ -27,12 +27,12 @@ export const AddPicture = ({ images, setImages }) => {
     if (selectedFile) {
       const fileSizeInMB = selectedFile.size / (1024 * 1024);
       console.log("fileSizeInMB:", fileSizeInMB);
-      if (fileSizeInMB > 4) {
-        alert(
-          "Le fichier est trop grand. Veuillez choisir un fichier de moins de 4 Mo."
-        );
-        return;
-      }
+      // if (fileSizeInMB > 4) {
+      //   alert(
+      //     "Le fichier est trop grand. Veuillez choisir un fichier de moins de 4 Mo."
+      //   );
+      //   return;
+      // }
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewPicture(reader.result);

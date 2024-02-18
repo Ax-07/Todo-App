@@ -9,5 +9,6 @@ db.Sequelize = Sequelize; // Ajout de Sequelize à l'objet db
 db.sequelize = sequelize; // Ajout de l'instance de Sequelize à l'objet db
 
 db.todos = require('./todo.model.js')(sequelize, Sequelize); // Importation du modèle Todo et l'initialisation avec l'instance de Sequelize et Sequelize
+db.figure = require('./figure.model.js')(sequelize, Sequelize); // Importation du modèle Todo et l'initialisation avec l'instance de Sequelize et Sequelize
 
 module.exports = db; // Exportation de l'objet db pour être utilisé dans d'autres modules

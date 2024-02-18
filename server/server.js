@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express(); // Création d'une nouvelle application express
-const port = 8050; // Définition du port sur lequel le serveur sera lancé
 const path = require('path'); // Importation du module path pour gérer les chemins de fichiers
 const cors = require('cors'); // Importation du module cors pour gerer les origines
 
@@ -15,6 +14,8 @@ db.sequelize.sync().then(()=> console.log('db synchronisé')); // Synchronisatio
 // Importation des routes
 const todoRoute = require('./routes/todo.routes');
 app.use('/api/todo',todoRoute); // Configuration de l'application pour utiliser les routes de todo
+const figureRoute = require('./routes/figure.routes');
+app.use('/api/figure', figureRoute); // Configuration de l'application pour utiliser les routes de figure
 
 // Swagger API documentation
 const swaggerUi = require('swagger-ui-express'); // Importation du module swagger-ui-express
@@ -31,6 +32,9 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
     res.status(404).json({ error: 'Route non trouvée' });
   });
+
+
+const port = process.env.PORT || 8050; // Définition du port sur lequel le serveur sera lancé
 // Démarrage du serveur sur le port spécifié
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

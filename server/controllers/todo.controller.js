@@ -6,6 +6,7 @@ const { Op } = require('sequelize');
 
 // Création et enregistrement d'une nouvelle tâche
 exports.create = (req, res) => {
+    console.log('create', req)
     // Validation de la requête
     if (!req.body.title) {
         res.status(400).json({ message: "Le contenu ne peut pas être vide !" });
@@ -18,12 +19,15 @@ exports.create = (req, res) => {
         images: res.locals.files,
         status: req.body.status ? req.body.status : false
     };
+    console.log(todo)
     // Sauvegarde de la tâche dans la base de données
     Todo.create(todo)
         .then(data => {
             res.json(data);
+            console.log(res)
         })
         .catch(err => {
+            console.log(res)
             res.status(500).json({ message: err.message || "Une erreur s'est produite lors de la création de la tâche." });
         });
 };

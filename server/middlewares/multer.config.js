@@ -38,6 +38,7 @@ const upload = multer({ storage: multer.memoryStorage() }).any();
 
 // Exportation d'un middleware qui gère l'upload des fichiers et les erreurs potentielles
 module.exports = (req, res, next) => {
+    console.log("req", req)
     upload(req, res, async function (err) {
         // Gestion des erreurs
         if (err instanceof multer.MulterError) {
@@ -48,8 +49,12 @@ module.exports = (req, res, next) => {
         // Création de l'URL de base pour les fichiers
         const host = req.protocol + '://' + req.get('host');
         // Stockage des informations sur les fichiers dans res.locals
-        if (req.files) {
+        try {
+            console.log('test');
+            if (req.files) {
+                console.log(req.files)
             res.locals.files = await Promise.all(req.files.map(async file => {
+                console.log(file)
                 // Création des différentes versions de l'image
                 const desktopImagePath = 'desktop-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp'; // Nom du fichier
                 await sharp(file.buffer)
@@ -76,6 +81,10 @@ module.exports = (req, res, next) => {
                 }; // Retourne un objet avec les URLs des différentes versions de l'image
             }));
         }
+        } catch (error) {
+            console.log(error);
+        }
+
         // Affichage des informations sur les fichiers dans la console
         console.log(res.locals.files);
         // Passage au middleware suivant
