@@ -22,7 +22,7 @@ const MIME_TYPES = {
 const storage = multer.diskStorage({
     // Destination des fichiers
     destination: (req, file, callback) => {
-        callback(null, path.join(__dirname, '..', 'static', 'images')); // Enregistrement des fichiers dans le dossier static/images
+        callback(null, path.join(__dirname, '..', 'public', 'images')); // Enregistrement des fichiers dans le dossier public/images
     },
     // Nom des fichiers
     filename: (req, file, callback) => {
@@ -41,6 +41,20 @@ const upload = multer({
     }
 }).any();
 
+const DESKTOP_SIZE = 1024;
+const TABLET_SIZE = 768;
+const MOBILE_SIZE = 320;
+const IMAGE_QUALITY = 80;
+
+// Fonction pour redimensionner et convertir une image en WebP avec une qualité donnée et un préfixe spécifique pour le nom du fichier (desktop, tablet, mobile)
+const processImage = async (file, size, prefix) => {
+    const imagePath = `${prefix}-${file.originalname.split('.').slice(0, -1).join('_')}.webp`; // Nom du fichier
+    await sharp(file.buffer)
+        .resize(size) // Redimensionne l'image à la taille spécifiée (desktop, tablet, mobile)
+        .webp({ quality: IMAGE_QUALITY }) // Convertit l'image en WebP avec une qualité de 80%
+        .toFile(path.join(__dirname, '..', 'public', 'images', imagePath)); // Enregistre l'image dans le dossier public/images
+    return imagePath; // Retourne le nom du fichier
+}
 // Exportation d'un middleware qui gère l'upload des fichiers et les erreurs potentielles
 module.exports = (req, res, next) => {
     upload(req, res, async function (err) {
@@ -56,24 +70,9 @@ module.exports = (req, res, next) => {
         try {
             if (req.files) {
                 res.locals.files = await Promise.all(req.files.map(async file => {
-                    // Création des différentes versions de l'image
-                    const desktopImagePath = 'desktop-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp'; // Nom du fichier
-                    await sharp(file.buffer)
-                        .resize(1024) // Desktop
-                        .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
-                        .toFile(path.join(__dirname, '..', 'static', 'images', desktopImagePath)); // Enregistre l'image dans le dossier static/images
-
-                    const tabletImagePath = 'tablet-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp';
-                    await sharp(file.buffer)
-                        .resize(768) // Tablette
-                        .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
-                        .toFile(path.join(__dirname, '..', 'static', 'images', tabletImagePath)); // Enregistre l'image dans le dossier static/images
-
-                    const mobileImagePath = 'mobile-' + file.originalname.split('.').slice(0, -1).join('_') + '.webp';
-                    await sharp(file.buffer)
-                        .resize(320) // Mobile
-                        .webp({ quality: 80 }) // Convertit l'image en WebP avec une qualité de 80%
-                        .toFile(path.join(__dirname, '..', 'static', 'images', mobileImagePath)); // Enregistre l'image dans le
+                    const desktopImagePath = await processImage(file, DESKTOP_SIZE, 'desktop');
+                    const tabletImagePath = await processImage(file, TABLET_SIZE, 'tablet');
+                    const mobileImagePath = await processImage(file, MOBILE_SIZE, 'mobile');
 
                     return {
                         desktop: host + '/images/' + desktopImagePath,
