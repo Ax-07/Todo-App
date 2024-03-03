@@ -39,7 +39,7 @@ app.use((req, res) => {
     res.send('Welcome to the API');
   })
 
-const port = process.env.PORT || 8050; // Définition du port sur lequel le serveur sera lancé
+const port = 8050; // Définition du port sur lequel le serveur sera lancé
 // Démarrage du serveur sur le port spécifié
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
