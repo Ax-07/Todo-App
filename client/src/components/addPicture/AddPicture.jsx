@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PropTypes from "prop-types";
+import { useDragNDrop } from "../../utils/hooks/useDragNDrop";
 
 export const AddPicture = ({ images, setImages }) => {
   const [isDisplayPreviewPicture, setIsDisplayPreviewPicture] = useState(false);
   const [previewPicture, setPreviewPicture] = useState(null);
   const [listPreviewPicture, setListPreviewPicture] = useState([]);
   const [imageToAdd, setImageToAdd] = useState("");
+  const inputRef = useRef();
+  const { dragging, dragOver, dragEnter, dragLeave, fileDrop } = useDragNDrop();
 
   const addImageToList = () => {
     if (previewPicture) {
@@ -15,11 +18,17 @@ export const AddPicture = ({ images, setImages }) => {
       setIsDisplayPreviewPicture(false);
     }
   };
-  console.log("images:", images);
-
   const deleteImageFromList = (index) => {
     setImages(images.filter((_, i) => i !== index));
     setListPreviewPicture(listPreviewPicture.filter((_, i) => i !== index));
+  };
+
+  const cancelImageToAdd = () => {
+    setPreviewPicture(null);
+    setIsDisplayPreviewPicture(false);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
   };
 
   const onInputChange = (e) => {
@@ -66,14 +75,38 @@ export const AddPicture = ({ images, setImages }) => {
           ))}
         </div>
       )}
-      <img
-        src={previewPicture}
-        id="picture-preview"
+      <div
         className={`add-picture__preview ${
           isDisplayPreviewPicture ? "add-picture__preview--active" : ""
         }`}
-      />
-      <div className="add-picture__wrapper">
+      >
+        <img src={previewPicture} id="picture-preview" />
+        <span
+          tabIndex="0"
+          role="button"
+          className="btn-close"
+          onClick={() => cancelImageToAdd()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              cancelImageToAdd();
+            }
+          }}
+        >
+          ❌
+        </span>
+      </div>
+
+      <div className={dragging ? 'add-picture__wrapper dragging' : 'add-picture__wrapper'}
+  onDragOver={dragOver}
+  onDragEnter={dragEnter}
+  onDragLeave={dragLeave}
+  onDrop={(e) => {
+    const files = fileDrop(e);
+    if (files.length) {
+      onInputChange({ target: { files } }); // `onInputChange({ target: { files } })` = `onInputChange(e.target.files[0])`
+    }
+  }}
+>
         <span className="add-picture__icon fa-regular fa-image"></span>
         <label
           htmlFor="picture"
@@ -87,11 +120,12 @@ export const AddPicture = ({ images, setImages }) => {
           id="picture"
           className="add-picture__input"
           onChange={onInputChange}
+          ref={inputRef}
         />
         <p className="add-picture__txt">jpg, png : 4mo max</p>
       </div>
       <button type="button" onClick={addImageToList}>
-        Ajouter a la liste 
+        Ajouter a la liste
       </button>
     </div>
   );

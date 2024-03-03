@@ -45,7 +45,10 @@ const AddTodoForm = () => {
             placeholder="Title..."
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              e.preventDefault();
+              setTitle(e.target.value)
+            }}
           />
         </div>
         <div>

@@ -14,6 +14,11 @@ export const Navbar = () => {
                         Figures
                     </NavLink>
                 </li>
+                <li>
+                    <NavLink className="nav__link" to="/convert">
+                        Convert Picture
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     );

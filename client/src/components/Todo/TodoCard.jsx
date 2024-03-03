@@ -6,6 +6,7 @@ import { setFormatDate } from "../../utils/functions/setFormatDate";
 export const TodoCard = ({ todo }) => {
   const [status, setStatus] = useState(todo.status);
   const createdAt = setFormatDate(new Date(todo.createdAt)); console.log(createdAt);
+  
   const updateTodo = async () => {
     console.log(todo.id);
     // const updateStatus = todo.status === true ? false : true;
@@ -40,11 +41,12 @@ export const TodoCard = ({ todo }) => {
       <h2>{todo.title}</h2>
       <div className="todo__imgs">
       {todo.images.map((image, index) => {
+        console.log(image.desktop);
         return (
           <img
             key={index}
             srcSet={`${image.mobile} 500w, ${image.tablet} 800w, ${image.desktop} 1200w`}
-            sizes="(max-width: 500px) 500px, (max-width: 800px) 800px, 1200px"
+            sizes="(max-width: 375px) 320px, (max-width: 768px) 768px, 1024px"
             src={image.mobile}
             alt={todo.title}
           />

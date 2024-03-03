@@ -19,19 +19,19 @@ const MIME_TYPES = {
 };
 
 // Configuration de multer pour stocker les fichiers sur le disque
-const storage = multer.diskStorage({
-    // Destination des fichiers
-    destination: (req, file, callback) => {
-        callback(null, path.join(__dirname, '..', 'public', 'images')); // Enregistrement des fichiers dans le dossier public/images
-    },
-    // Nom des fichiers
-    filename: (req, file, callback) => {
-        const name = file.originalname.split(' ').join('_'); // Remplacement des espaces par des underscores
-        const extension = MIME_TYPES[file.mimetype]; // Récupération de l'extension du fichier
-        const date = formatDate(new Date()); // Récupération et formatage de la date actuelle
-        callback(null, name + '_' + date + '.' + extension); // Création du nom du fichier
-    },
-});
+// const storage = multer.diskStorage({
+//     // Destination des fichiers
+//     destination: (req, file, callback) => {
+//         callback(null, path.join(__dirname, '..', 'public', 'images')); // Enregistrement des fichiers dans le dossier public/images
+//     },
+//     // Nom des fichiers
+//     filename: (req, file, callback) => {
+//         const name = file.originalname.split(' ').join('_'); // Remplacement des espaces par des underscores
+//         const extension = MIME_TYPES[file.mimetype]; // Récupération de l'extension du fichier
+//         const date = formatDate(new Date()); // Récupération et formatage de la date actuelle
+//         callback(null, name + '_' + date + '.' + extension); // Création du nom du fichier
+//     },
+// });
 
 // Utilisation de multer avec la configuration de stockage définie
 const upload = multer({
@@ -41,9 +41,9 @@ const upload = multer({
     }
 }).any();
 
-const DESKTOP_SIZE = 1024;
+const DESKTOP_SIZE = 1280;
 const TABLET_SIZE = 768;
-const MOBILE_SIZE = 320;
+const MOBILE_SIZE = 375;
 const IMAGE_QUALITY = 80;
 
 // Fonction pour redimensionner et convertir une image en WebP avec une qualité donnée et un préfixe spécifique pour le nom du fichier (desktop, tablet, mobile)
@@ -65,7 +65,7 @@ module.exports = (req, res, next) => {
             return res.status(500).json(err);
         }
         // Création de l'URL de base pour les fichiers
-        const host = req.protocol + '://' + req.get('host');
+        const host = req.protocol + '://' + req.get('host');    
         // Stockage des informations sur les fichiers dans res.locals
         try {
             if (req.files) {
